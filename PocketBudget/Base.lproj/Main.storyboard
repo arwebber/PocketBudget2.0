@@ -1180,6 +1180,7 @@
                     <connections>
                         <outlet property="lblDailyAmount" destination="LZV-xd-m1j" id="PSV-m1-uy8"/>
                         <outlet property="recentTable" destination="yMd-mv-sta" id="9jG-CK-Jf1"/>
+                        <segue destination="QWK-Ar-tF4" kind="show" identifier="debitDetailsFromDashboard" id="o2w-8q-62T"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LqA-jy-Vhv" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1231,6 +1232,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="YPc-WY-NVg"/>
+        <segue reference="o2w-8q-62T"/>
         <segue reference="RNy-EP-IMs"/>
     </inferredMetricsTieBreakers>
 </document>

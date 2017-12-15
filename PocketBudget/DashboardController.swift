@@ -20,6 +20,13 @@ class DashboardController: UIViewController, UITableViewDelegate, UITableViewDat
     var incomeArray: [Income] = []
     var currentUser = Auth.auth().currentUser!
     var incomeObject = Income()
+    //variables for selected row
+    var deb = Debits()
+    var summary: String?
+    var amount: Double?
+    var category: String?
+    var frequency: String?
+    var date: String?
     //var incomeString: String
     
     @IBOutlet weak var recentTable: UITableView!
@@ -240,17 +247,36 @@ class DashboardController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
+        summary = self.recentArray[indexPath.row].summary
+        amount = self.recentArray[indexPath.row].amount
+        category = self.recentArray[indexPath.row].category
+        frequency = self.recentArray[indexPath.row].frequency
+        date = self.recentArray[indexPath.row].dateAddedd
+        
+        deb = Debits(dateAdded: date!, summary: summary!, amount: amount!, frequency: frequency!, category: category!)
+        performSegue(withIdentifier: "debitDetailsFromDashboard", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+        if segue.identifier == "debitDetailsFromDashboard" {
+            let vc = segue.destination as! DebitDetailsController
+            vc.detailDebit = deb
+        }
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+//
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "creditDetails" {
+//            let vc = segue.destination as! CreditDetailsController
+//            vc.detailCredit = creditObject
+//        }
+//    }
     
     @IBAction func btnLogout_TouchUpInside(_ sender: Any) {
         let firebaseAuth = Auth.auth()
