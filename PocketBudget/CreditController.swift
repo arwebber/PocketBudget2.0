@@ -97,25 +97,44 @@ class CreditController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     @IBAction func btn_AddTouchUpInside(_ sender: Any) {
-        creditAmount = Double(txtAmount.text!)!
-        //creditAmountDisplay = Double(txtAmount.text!)!
-        //creditCategory = pickerData[picCategory.selectedRow(inComponent: 0)]
-        creditSummary = txtSummary.text!
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM/dd/yyyy"
-        let dateString = formatter.string(from: date)
+        //check
+        var alertController = UIAlertController(title: "Failed", message: (""), preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "Okay" , style: UIAlertActionStyle.default){
+            (result : UIAlertAction) -> Void in
+            print("Okay")
+        }
         
-        //let key = "2"//ref.reference().childByAutoId()
+        if(txtSummary.text == ""){
+            alertController = UIAlertController(title: "Failed", message: ("Please enter a summary."), preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(okAction)
+            self.present(alertController, animated:true, completion: nil)
+        }else if (txtAmount.text == ""){
+            alertController = UIAlertController(title: "Failed", message: ("Please enter an amount."), preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(okAction)
+            self.present(alertController, animated:true, completion: nil)
+        }
         
-        let deb = Credits(dateAdded: dateString, summary: creditSummary, amount: creditAmount, amountDisplay: creditAmount)
-        
-        //let array: NSArray = [deb.toAnyObject()]
-        
-        ref.reference(withPath: "credits/\(currentUser.uid)").childByAutoId().setValue(deb.toAnyObject())
+        if(txtSummary.text != "" && txtAmount.text != ""){
+            creditAmount = Double(txtAmount.text!)!
+            //creditAmountDisplay = Double(txtAmount.text!)!
+            //creditCategory = pickerData[picCategory.selectedRow(inComponent: 0)]
+            creditSummary = txtSummary.text!
+            let date = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM/dd/yyyy"
+            let dateString = formatter.string(from: date)
+            
+            //let key = "2"//ref.reference().childByAutoId()
+            
+            let deb = Credits(dateAdded: dateString, summary: creditSummary, amount: creditAmount, amountDisplay: creditAmount)
+            
+            //let array: NSArray = [deb.toAnyObject()]
+            
+            ref.reference(withPath: "credits/\(currentUser.uid)").childByAutoId().setValue(deb.toAnyObject())
 
-        txtAmount.text = ""
-        txtSummary.text = ""
+            txtAmount.text = ""
+            txtSummary.text = ""
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -31,22 +31,6 @@ class DebitController: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
         picCategory.delegate = self
         picCategory.dataSource = self
         super.viewDidLoad()
-        
-//        ref.reference(withPath: "income/\(currentUser.uid)").observe(.value, with:
-//            { snapshot in
-//                var fireAccountArray: [Income] = []
-//
-//                for fireAccount in snapshot.children {
-//                    let fireAccount = Debits(snapshot: fireAccount as! DataSnapshot)
-//                    fireAccountArray.append(fireAccount)
-//
-//                }
-//
-//                self.debitArray = fireAccountArray
-//
-//        })
-        
-        // Do any additional setup after loading the view.
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -77,8 +61,6 @@ class DebitController: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
     var debitFrequency: String = "Once"
     var debitCategory: String = ""
     var debitSummary: String = ""
-    // var selected
-    //var summary: String
     
     @IBAction func segAmount_Selection(_ sender: Any) {
         if segAmount.selectedSegmentIndex == 0{
@@ -98,25 +80,43 @@ class DebitController: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
     
     @IBAction func btnAdd_TouchUpInside(_ sender: Any) {
         //add try catch
-        debitAmount = Double(txtAmount.text!)!
-        debitCategory = pickerData[picCategory.selectedRow(inComponent: 0)]
-        debitSummary = txtSummary.text!
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM/dd/yyyy"
-        let dateString = formatter.string(from: date)
         
-        //let key = "2"//ref.reference().childByAutoId()
+        var alertController = UIAlertController(title: "Failed", message: (""), preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "Okay" , style: UIAlertActionStyle.default){
+            (result : UIAlertAction) -> Void in
+            print("Okay")
+        }
         
-        let deb = Debits(dateAdded: dateString, summary: debitSummary, amount: debitAmount, frequency: debitFrequency, category: debitCategory)
+        if(txtSummary.text == ""){
+            alertController = UIAlertController(title: "Failed", message: ("Please enter a summary."), preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(okAction)
+            self.present(alertController, animated:true, completion: nil)
+        }else if (txtAmount.text == ""){
+            alertController = UIAlertController(title: "Failed", message: ("Please enter an amount."), preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(okAction)
+            self.present(alertController, animated:true, completion: nil)
+        }
         
-        //let array: NSArray = [deb.toAnyObject()]
+        if(txtSummary.text != "" && txtAmount.text != ""){
+            debitAmount = Double(txtAmount.text!)!
+            debitCategory = pickerData[picCategory.selectedRow(inComponent: 0)]
+            debitSummary = txtSummary.text!
+            let date = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM/dd/yyyy"
+            let dateString = formatter.string(from: date)
+            
+            //let key = "2"//ref.reference().childByAutoId()
+            
+            let deb = Debits(dateAdded: dateString, summary: debitSummary, amount: debitAmount, frequency: debitFrequency, category: debitCategory)
+            
+            //let array: NSArray = [deb.toAnyObject()]
 
-        ref.reference(withPath: "debits/\(currentUser.uid)").childByAutoId().setValue(deb.toAnyObject())
-        
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "tab")
-        self.present(vc!, animated: true, completion: nil)
-        
+            ref.reference(withPath: "debits/\(currentUser.uid)").childByAutoId().setValue(deb.toAnyObject())
+            
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "tab")
+            self.present(vc!, animated: true, completion: nil)
+        }
     }
 
     

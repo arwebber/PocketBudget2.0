@@ -121,25 +121,46 @@ class SettingsController2: UIViewController, UIPickerViewDelegate, UIPickerViewD
     }
     
     @IBAction func btnSave_TouchUpInside(_ sender: Any) {
-        incomeDouble = Double(lblIncome.text!)!
-        incomeType = pickerData[pickerView.selectedRow(inComponent: 0)]
-        if(savingsType == "Percent"){
-            savingsDouble = (Double(savingsAmount.text!)! / 100)
-        }else if(savingsType == "Dollar"){
-            savingsDouble = Double(savingsAmount.text!)!
-        }else if(savingsType == ""){
-            savingsType = "Percent"
-            savingsDouble = (Double(savingsAmount.text!)! / 100)
-        }else{
-            
+        //check
+        var alertController = UIAlertController(title: "Failed", message: (""), preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "Okay" , style: UIAlertActionStyle.default){
+            (result : UIAlertAction) -> Void in
+            print("Okay")
         }
         
-        let income = Income(income: incomeDouble, incomeType: incomeType, savingsAmount: savingsDouble, savingsType: savingsType, extraIncome: 0)
+        if(lblIncome.text == ""){
+            alertController = UIAlertController(title: "Failed", message: ("Please enter your income."), preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(okAction)
+            self.present(alertController, animated:true, completion: nil)
+        }else if (savingsAmount.text == ""){
+            alertController = UIAlertController(title: "Failed", message: ("Please enter your desired savings amount."), preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(okAction)
+            self.present(alertController, animated:true, completion: nil)
+        }
         
-        //let array: NSArray = [deb.toAnyObject()]
-        
-        ref.reference(withPath: "income/\(currentUser.uid)").setValue(income.toAnyObject())
-        
+        if(lblIncome.text != "" && savingsAmount.text != ""){
+            
+            //todo: add blank->0 check
+            incomeDouble = Double(lblIncome.text!)!
+            incomeType = pickerData[pickerView.selectedRow(inComponent: 0)]
+           //todo: add blank->0 check
+            if(savingsType == "Percent"){
+                savingsDouble = (Double(savingsAmount.text!)! / 100)
+            }else if(savingsType == "Dollar"){
+                savingsDouble = Double(savingsAmount.text!)!
+            }else if(savingsType == ""){
+                savingsType = "Percent"
+                savingsDouble = (Double(savingsAmount.text!)! / 100)
+            }else{
+                
+            }
+            
+            let income = Income(income: incomeDouble, incomeType: incomeType, savingsAmount: savingsDouble, savingsType: savingsType, extraIncome: 0)
+            
+            //let array: NSArray = [deb.toAnyObject()]
+            //ref.reference(withPath: "income/\(currentUser.uid)/income").setValue(Double(income2.income))
+            ref.reference(withPath: "income/\(currentUser.uid)").setValue(income.toAnyObject())
+        }
     }
     
 
